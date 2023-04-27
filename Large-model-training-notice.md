@@ -157,7 +157,7 @@ deepspeed --num_gpus=8 /opt/ml/code/model_file/train.py \
 	# （*注意LLM场景，务必不能用/opt/ml/model作为模型的输出路径，否则Sagemaker会执行 model file -> tar --s3 cp--> s3
 	# 会有小时级别的时间消耗
 chmod +x ./s5cmd
-./s5cmd sync /tmp/large_model_out s3://$MODEL_S3_BUCKET/ds-llama/output/$(date +%Y-%m-%d-%H-%M-%S)/
+./s5cmd sync /tmp/large_model_out s3://$MODEL_S3_BUCKET/some-output-path/output/$(date +%Y-%m-%d-%H-%M-%S)/
 ```
 
 <br />
