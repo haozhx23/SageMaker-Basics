@@ -3,7 +3,7 @@
 <br />
 
 ### SageMaker
-![image-20230427132700003](image-20230427132700003.png)
+![image-20230427132700003](assets/image-20230427132700003.png)
 
 ### Developer Guide
 
