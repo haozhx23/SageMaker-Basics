@@ -1,72 +1,74 @@
 ## SageMaker LM Training
 
+<br />
 
+### SageMaker
+![image-20230427132700003](image-20230427132700003.png)
 
-#### Developer Guide
+### Developer Guide
 
-https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html
+https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html  
 
+<br />
 
-
-
-#### API文档
+### API文档
 
 Estimator - https://sagemaker.readthedocs.io/en/stable/api/training/estimators.html
 
 HF Estimator - https://sagemaker.readthedocs.io/en/stable/frameworks/huggingface/sagemaker.huggingface.html#hugging-face-estimator
 
-TrochEstimator - https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/sagemaker.pytorch.html
+TrochEstimator - https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/sagemaker.pytorch.html  
 
+<br />
 
-
-#### Sample Code
+### Sample Code
 
 Sagemaker官方examples - https://github.com/aws/amazon-sagemaker-examples
 
-- 主要关注training/inference/
+- 主要关注training & advanced_functionality
 
 AWS Samples - https://github.com/aws-samples
 
 SSH helper - https://github.com/aws-samples/sagemaker-ssh-helper
 
-FlanT5 - https://github.com/yuhuiaws/DeepSpeed-training-LLM-on-SageMaker-for-multiple-nodes
-
-- Deepspeed多机多卡Sample
-
-Alpaca / Vicuna - https://github.com/snowolf/alpaca-on-amazon-sagemaker
-
-- 包含Torchrun & Docker build Sample
+FlanT5 Deepspeed多机多卡Sample 
+- https://github.com/yuhuiaws/DeepSpeed-training-LLM-on-SageMaker-for-multiple-nodes
 
 
+Alpaca / Vicuna Sample
+- https://github.com/snowolf/alpaca-on-amazon-sagemaker
+- 包含Torchrun & Docker build
 
-#### Docker相关
+<br />
+
+### Docker相关
 
 Sagemaker预制的镜像列表
 
 - https://github.com/aws/deep-learning-containers/blob/master/available_images.md 
 - https://docs.aws.amazon.com/sagemaker/latest/dg/ecr-us-east-1.html
 
-自建镜像需要的SM Training Toolkit - https://github.com/aws/sagemaker-training-toolkit
-
+自建镜像需要的SM Training Toolkit
+- https://github.com/aws/sagemaker-training-toolkit
 - 使用自定义镜像时，Dockerfile中仅需要额外增加```RUN pip3 install sagemaker-training```
 
-Docker Container in SM - https://docs.aws.amazon.com/sagemaker/latest/dg/docker-containers.html
+Docker Container in SM 
+- https://docs.aws.amazon.com/sagemaker/latest/dg/docker-containers.html
 
-Self-build docker - https://docs.aws.amazon.com/sagemaker/latest/dg/adapt-training-container.html#byoc-training-step5
-
+Self-build docker 
+- https://docs.aws.amazon.com/sagemaker/latest/dg/adapt-training-container.html#byoc-training-step5
 - 包含非默认名称的权限配置
 
 其他
 
 - 扩展SageMaker镜像 - https://sagemaker-examples.readthedocs.io/en/latest/advanced_functionality/pytorch_extending_our_containers/pytorch_extending_our_containers.html
-
 - SageMaker内置镜像Source file参考 - https://github.com/aws/deep-learning-containers/tree/master/pytorch/training/docker
 - SageMaker内置镜像提供的env列表 - https://github.com/aws/sagemaker-training-toolkit/blob/master/src/sagemaker_training/params.py
-- 如果用notebook instance构建镜像，需要提前把docker的存储路径修改到/ec2-user/SagaMaker/some_temp_path，来使用外挂存储。避免空间不足。&重启docker。
+- 如果用notebook instance构建镜像，需要提前把docker的存储路径修改到/ec2-user/SagaMaker/some_temp_path，来使用外挂存储。避免空间不足。&重启docker  
 
+<br />
 
-
-#### SageMaker API Sample
+### SageMaker API Sample
 
 ```python
 import time
@@ -116,9 +118,9 @@ datachnl = {'train123':'s3://some-bucket-name/datasets/data-path-train/',
 est.fit(datachnl)
 ```
 
+<br />
 
-
-#### 入口脚本Sample
+### 入口脚本Sample
 
 ```shell
 #!/bin/bash
@@ -158,9 +160,9 @@ chmod +x ./s5cmd
 ./s5cmd sync /tmp/large_model_out s3://$MODEL_S3_BUCKET/ds-llama/output/$(date +%Y-%m-%d-%H-%M-%S)/
 ```
 
+<br />
 
-
-#### 训练过程中的存储原理（参考）
+### 训练过程中的存储原理（参考）
 
 包括SM默认使用的路径、自动tar、tmp路径等
 
@@ -172,10 +174,10 @@ https://docs.aws.amazon.com/sagemaker/latest/dg/model-checkpoints.html
 
 <u>***Note：仅做原理参考。LM场景因为模型太大，务必走上述Sample Code中的形式，直接用s5cmd对参数文件、checkpoint等进行控制</u>
 
+<br />
 
-
-#### 需要注意的点
+### 需要注意的点
 
 如果在SageMaker Console手动停止任务后，长时间任务状态没有变化或者停止，需要快速开ticket，由后台engineer操作强停。
 
-
+<br />
