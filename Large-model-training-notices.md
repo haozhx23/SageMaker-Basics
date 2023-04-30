@@ -180,4 +180,3 @@ https://docs.aws.amazon.com/sagemaker/latest/dg/model-checkpoints.html
 
 如果在SageMaker Console手动停止任务后，长时间任务状态没有变化或者停止，需要快速开ticket，由后台engineer操作强停。
 
-<br />
