@@ -1,23 +1,5 @@
 ## SageMaker LM Training
 
-<br />
-
-### SageMaker
-![image-20230427132700003](assets/image-20230427132700003.png)
-
-### Developer Guide
-
-https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html  
-
-<br />
-
-### API文档
-
-Estimator - https://sagemaker.readthedocs.io/en/stable/api/training/estimators.html
-
-HF Estimator - https://sagemaker.readthedocs.io/en/stable/frameworks/huggingface/sagemaker.huggingface.html#hugging-face-estimator
-
-TrochEstimator - https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/sagemaker.pytorch.html  
 
 <br />
 
@@ -33,7 +15,6 @@ SSH helper - https://github.com/aws-samples/sagemaker-ssh-helper
 
 FlanT5 Deepspeed多机多卡Sample 
 - https://github.com/yuhuiaws/DeepSpeed-training-LLM-on-SageMaker-for-multiple-nodes
-
 
 Alpaca / Vicuna Sample
 - https://github.com/snowolf/alpaca-on-amazon-sagemaker

@@ -15,14 +15,15 @@
 * https://sagemaker-workshop.com/custom/containers.html
 <br />
 
-### Workshop
+<br />
+### Hands-on Workshop
 
 #### Preparation
 1 - 在notebook console中cd到SageMaker文件路径：/home/ec2-user/SageMaker/
 <br />
 2 - git clone https://github.com/aws-samples/amazon-sagemaker-immersion-day
 <br />
-3 - 基于Workshop Lab 3b
+3 - 基于Workshop Lab-3b
 https://catalog.us-east-1.prod.workshops.aws/workshops/63069e26-921c-4ce1-9cc7-dd882ff62575/en-US/lab3/option1-b
 <br />
 中间跳过Launch the notebook instance
@@ -44,6 +45,68 @@ HF Estimator - https://sagemaker.readthedocs.io/en/stable/frameworks/huggingface
 TrochEstimator - https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/sagemaker.pytorch.html  
 
 <br />
+
+```python
+import time
+from sagemaker.estimator import Estimator
+
+instance_count = 2
+envs = {
+            'NODE_NUMBER':str(instance_count),
+            'MODEL_S3_BUCKET': sagemaker_default_bucket
+}
+
+image_uri = '763104351884.dkr.ecr.us-east-1.amazonaws.com/huggingface-pytorch-training:1.13.1-transformers4.26.0-gpu-py39-cu117-ubuntu20.04 '
+
+
+est = Estimator(role=role,
+                      entry_point='run_train.py',
+                      source_dir='./',
+                      base_job_name='some-job-name',
+                      instance_count=instance_count,
+                      instance_type='ml.p4de.24xlarge',
+                      image_uri=image_uri,
+                      environment=envs,
+                      max_run=3600*24*2, # 训练任务存续的时间上限
+                      keep_alive_period_in_seconds=3600, # warm pool
+               )
+
+
+## data channel
+data_channel = {'train123':'s3://some-bucket-name/datasets/data-path-train/',
+           'val123':'s3://some-bucket-name/datasets/data-path-val/'}
+
+est.fit(data_channel)
+
+'''
+# HuggingFace Estimator
+huggingface_estimator = HuggingFace(
+                            entry_point          = 'start.py',        
+                            source_dir           = 'src',             
+                            instance_type        = 'ml.p4de.24xlarge', 
+                            instance_count       = instance_count,
+                            base_job_name        = job_name,      
+                            role                 = role,           
+                            transformers_version = '4.17',        
+                            pytorch_version      = '1.10',        
+                            py_version           = 'py38',
+                            environment = environment,
+                        )
+
+# Pytorch Estimator
+pytorch_estimator = PyTorch(
+                        entry_point="start.py",
+                        source_dir= 'src',
+                        role=role,
+                        py_version="py38",
+                        framework_version="1.11.0",
+                        instance_count=2,
+                        instance_type="ml.c5.2xlarge",
+                        hyperparameters={"epochs": 1, "backend": "gloo"},
+                    )
+'''
+```
+
 
 ### Sample Code
 
