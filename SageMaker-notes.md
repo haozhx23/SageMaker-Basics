@@ -47,6 +47,15 @@ TrochEstimator - https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/s
 
 <br />
 
+<br />
+
+### SageMaker Core API Sample (Based on Notebook)
+1. Notebook Instance 仅做算力资源的调用，交互式coding，下载HF模型参数/训练数据推送S3等。只需要python环境+SageMaker SDK，本身不运行训练任务
+<br />
+2. 任务（如模型训练）所需的环境，不需要在算力机上安装conda环境等。镜像地址 + requirement.txt基本可以满足
+3. API调用后，会把指定的code、model parameter、data一起拷贝到资源机（全托管）。任务结束后把训练好的model parameter拷回s3进行持久化
+4. 大模型场景，一般为了加速 资源机<->s3 的拷贝过程（避免拷贝操作占用算力机），需要的额外操作详见Large-model-training-notice
+
 ```python
 from sagemaker.estimator import Estimator
 
@@ -130,28 +139,3 @@ pytorch_estimator = PyTorch(
 
 Sagemaker官方examples - https://github.com/aws/amazon-sagemaker-examples
 
-
-<br />
-
-### Refs
-Train 175+ billion parameter NLP models with model parallel additions and Hugging Face on Amazon SageMaker https://aws.amazon.com/cn/blogs/machine-learning/train-175-billion-parameter-nlp-models-with-model-parallel-additions-and-hugging-face-on-amazon-sagemaker/
-<br />
-Training large language models on Amazon SageMaker: Best practices https://aws.amazon.com/cn/blogs/machine-learning/training-large-language-models-on-amazon-sagemaker-best-practices/
-<br />
-Deploy BLOOM-176B and OPT-30B on Amazon SageMaker with large model inference Deep Learning Containers and DeepSpeed https://aws.amazon.com/cn/blogs/machine-learning/deploy-bloom-176b-and-opt-30b-on-amazon-sagemaker-with-large-model-inference-deep-learning-containers-and-deepspeed/
-<br />
-Deploy large models on Amazon SageMaker using DJLServing and DeepSpeed model parallel inference https://aws.amazon.com/cn/blogs/machine-learning/deploy-large-models-on-amazon-sagemaker-using-djlserving-and-deepspeed-model-parallel-inference/
-https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints-large-model-inference.html
-<br />
-Distributed Training:
-https://github.com/aws/amazon-sagemaker-examples/tree/main/training/distributed_training/pytorch/model_parallel
-https://github.com/aws-samples/sagemaker-distributed-training-workshop
-<br />
-LLM model hosting https://github.com/aws-samples/sagemaker-hosting/tree/main/Large-Language-Model-Hosting
-<br />
-Bloom 176B https://github.com/aws/amazon-sagemaker-examples/tree/main/inference/nlp/realtime/llm/bloom_176b
-<br />
-GPT-J  https://github.com/aws-samples/sagemaker-hosting/blob/main/Large-Language-Model-Hosting/LLM-Deployment-SageMaker/intro_to_llm_deployment.ipynb
-<br />
-GPT-Neo-X https://github.com/aws-samples/sagemaker-hosting/blob/main/Large-Language-Model-Hosting/Optimize-LLM/djl_accelerate_deploy_g5_12x_GPT_NeoX.ipynb
-<br />
