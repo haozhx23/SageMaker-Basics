@@ -50,15 +50,19 @@ TrochEstimator - https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/s
 <br />
 
 ### SageMaker Core API Sample (Based on Notebook)
+<br />
+
 1. Notebook Instance 仅做算力资源的调用，交互式coding，下载HF模型参数/训练数据推送S3等。只需要python环境+SageMaker SDK，本身不运行训练任务
+
+2. 根据任务的算力/显存需要，按需配置```instance_type``` 、```instance_count```参数
+
+3. 任务（如模型训练）所需的环境，不需要在算力机上安装conda环境等。```image_uri``` + ```requirement.txt```基本可以满足
+
+4. API调用后，会把指定的code、model parameter、data一起拷贝到资源机（全托管）。任务结束后把训练好的model parameter拷回s3进行持久化
+
+5. 大模型场景，一般为了加速 资源机<-->s3 的拷贝过程（避免拷贝操作占用算力机），需要的额外操作详见Large-model-training-notice
+
 <br />
-2. 根据任务的算力/显存需要，按需配置```instance_type```、```instance_count```参数
-<br />
-2. 任务（如模型训练）所需的环境，不需要在算力机上安装conda环境等。```image_uri``` + ```requirement.txt```基本可以满足
-<br />
-3. API调用后，会把指定的code、model parameter、data一起拷贝到资源机（全托管）。任务结束后把训练好的model parameter拷回s3进行持久化
-<br />
-4. 大模型场景，一般为了加速 资源机<-->s3 的拷贝过程（避免拷贝操作占用算力机），需要的额外操作详见Large-model-training-notice
 
 ```python
 from sagemaker.estimator import Estimator
