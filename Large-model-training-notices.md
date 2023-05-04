@@ -52,7 +52,6 @@ Self-build docker
 ### SageMaker API Sample
 
 ```python
-import time
 from sagemaker.estimator import Estimator
 
 instance_count = 2
@@ -61,7 +60,9 @@ envs = {
             'MODEL_S3_BUCKET': sagemaker_default_bucket
 }
 
-image_uri = '763104351884.dkr.ecr.us-east-1.amazonaws.com/huggingface-pytorch-training:1.13.1-transformers4.26.0-gpu-py39-cu117-ubuntu20.04 '
+# 基础镜像，已经集成大部分依赖（注意us-east-1需要切换实际区域如us-west-2等）
+# 其他依赖，可以在source_dir中的requirements.txt中，以文本形式指定
+image_uri = '763104351884.dkr.ecr.us-east-1.amazonaws.com/huggingface-pytorch-training:1.13.1-transformers4.26.0-gpu-py39-cu117-ubuntu20.04'
 
 
 '''
@@ -76,13 +77,13 @@ max_run - Large Model场景如果预计到任务时间较长，需要按需调�
 keep_alive_period_in_seconds - SageMaker的warm pool https://docs.aws.amazon.com/sagemaker/latest/dg/train-warm-pools.html。需要根据机型，提升limit
 '''
 
-
+# 有其他的Estimator形式。底层都是基于docker，没有本质区别。
 est = Estimator(role=role,
                       entry_point='run_train.py',
                       source_dir='./',
                       base_job_name='some-job-name',
                       instance_count=instance_count,
-                      instance_type='ml.p4d.24xlarge',
+                      instance_type='ml.p4de.24xlarge',
                       image_uri=image_uri,
                       environment=envs,
                       # hyperparameters=hyps, # 如果不需要env，可以用hyper params带入所需变量
@@ -93,10 +94,11 @@ est = Estimator(role=role,
 
 
 ## data channel
-datachnl = {'train123':'s3://some-bucket-name/datasets/data-path-train/',
+## 训练数据在S3的路径
+data_channel = {'train123':'s3://some-bucket-name/datasets/data-path-train/',
            'val123':'s3://some-bucket-name/datasets/data-path-val/'}
 
-est.fit(datachnl)
+est.fit(data_channel)
 ```
 
 <br />
