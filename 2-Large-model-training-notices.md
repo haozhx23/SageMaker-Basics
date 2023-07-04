@@ -11,14 +11,16 @@ Sagemaker官方examples - https://github.com/aws/amazon-sagemaker-examples
 
 AWS Samples - https://github.com/aws-samples
 
-SSH helper - https://github.com/aws-samples/sagemaker-ssh-helper
-
 FlanT5 Deepspeed多机多卡Sample 
 - https://github.com/yuhuiaws/DeepSpeed-training-LLM-on-SageMaker-for-multiple-nodes
 
 Alpaca / Vicuna Sample
 - https://github.com/snowolf/alpaca-on-amazon-sagemaker
-- 包含Torchrun & Docker build
+- 包含Docker build & Fsx
+
+Llama with DeepSpeed or SMP
+- https://github.com/yuhuiaws/finetuning-and-deploying-llama-on-Sagemaker
+
 
 <br />
 
@@ -74,7 +76,7 @@ base_job_name - Estimator API会追加时间戳等标记保证全局job_name唯�
 
 max_run - Large Model场景如果预计到任务时间较长，需要按需调整。初始的limit 5天，可以提ticket提升至28天
 
-keep_alive_period_in_seconds - SageMaker的warm pool https://docs.aws.amazon.com/sagemaker/latest/dg/train-warm-pools.html。需要根据机型，提升limit
+keep_alive_period_in_seconds - SageMaker的warm pool https://docs.aws.amazon.com/sagemaker/latest/dg/train-warm-pools.html。滚动维持训练资源（节省资源拉取，镜像部署的时间）。需要根据机型，提升limit。
 '''
 
 # 有其他的Estimator形式。底层都是基于docker，没有本质区别。
@@ -87,7 +89,7 @@ est = Estimator(role=role,
                       image_uri=image_uri,
                       environment=envs,
                       # hyperparameters=hyps, # 如果不需要env，可以用hyper params带入所需变量
-                      max_run=3600*24*2, # 训练任务存续的时间上限
+                      max_run=3600*24*2,
                       keep_alive_period_in_seconds=3600,
                       disable_profiler=True,
                       debugger_hook_config=False)
@@ -111,12 +113,13 @@ est.fit(data_channel)
 # 1 - 模型参数文件，从s3拷贝到资源机	
 	# s5cmd等效于aws cli的aws s3 cp命令，速度更快
 	# （大模型以外的场景不需要该操作）
+    # 注意destination必须为/tmp的prefix（大机型自带的NVME存储）
 chmod +x ./s5cmd
 ./s5cmd sync s3://$MODEL_S3_BUCKET/some-large-model/pretrain/* /tmp/large_model_pretrain/
 
 # 2 - 训练数据从s3拷贝到资源机
 	# （不需要操作，Sagemaker会自动拷贝到资源机的默认路径/opt/ml/input/data/）
-	# e.g. /opt/ml/input/data/train123，这里train123跟Sagemaker Estimator fit() 传入的channel中的key名称一致
+	# e.g. /opt/ml/input/data/train123，这里train123跟Sagemaker Estimator.fit() 传入的channel中的key名称一致
 
 
 # 3 - 代码及脚本
@@ -143,9 +146,11 @@ chmod +x ./s5cmd
 ./s5cmd sync /tmp/large_model_out s3://$MODEL_S3_BUCKET/some-output-path/output/$(date +%Y-%m-%d-%H-%M-%S)/
 ```
 
+* 可以在训练脚本中，使用os.system()进行s5cmd的执行，用于训练过程中的checkpoint即时地持久化至s3，长时间训练下无需处理资源机上的存储空间。
+
 <br />
 
-### 训练过程中的存储原理（参考）
+### 训练过程中的存储路径设置（参考）
 
 包括SM默认使用的路径、自动tar、tmp路径等
 
@@ -167,6 +172,8 @@ https://docs.aws.amazon.com/sagemaker/latest/dg/model-checkpoints.html
 <br />
 
 ### Refs
+SSH helper - https://github.com/aws-samples/sagemaker-ssh-helper
+<br />
 Train 175+ billion parameter NLP models with model parallel additions and Hugging Face on Amazon SageMaker https://aws.amazon.com/cn/blogs/machine-learning/train-175-billion-parameter-nlp-models-with-model-parallel-additions-and-hugging-face-on-amazon-sagemaker/
 <br />
 Training large language models on Amazon SageMaker: Best practices https://aws.amazon.com/cn/blogs/machine-learning/training-large-language-models-on-amazon-sagemaker-best-practices/

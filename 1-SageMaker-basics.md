@@ -22,12 +22,12 @@
 #### Preparation
 1 - 在notebook console中cd到SageMaker文件路径：/home/ec2-user/SageMaker/
 <br />
-2 - git clone https://github.com/aws-samples/amazon-sagemaker-immersion-day
+2 - create a custom path e.g. mkdir abc, and cd abc
 <br />
-3 - 基于Workshop Lab-3b
+3 - git clone https://github.com/aws-samples/amazon-sagemaker-immersion-day
+<br />
+4 - 基于Workshop Lab-3b, a basic Torch training and hosting - 
 https://catalog.us-east-1.prod.workshops.aws/workshops/63069e26-921c-4ce1-9cc7-dd882ff62575/en-US/lab3/option1-b
-<br />
-中间跳过Launch the notebook instance
 
 <br />
 
@@ -56,7 +56,7 @@ TrochEstimator - https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/s
 
 2. 根据任务的算力/显存需要，按需配置```instance_type``` 、```instance_count```参数
 
-3. 任务（如模型训练）所需的环境，不需要在算力机上安装conda环境等。```image_uri``` + ```requirement.txt```基本可以满足
+3. 任务（如模型训练）所需的环境，不需要在算力机上安装conda环境等。```image_uri``` + ```requirement.txt```基本可以满足。（入口脚本是.py时，监测到代码路径下的requirements.txt会自动安装；入口脚本是.sh时，直接在脚本内使用pip install -r requirements.txt）
 
 4. API调用后，会把指定的code、model parameter、data一起拷贝到资源机（全托管）。任务结束后把训练好的model parameter拷回s3进行持久化
 
