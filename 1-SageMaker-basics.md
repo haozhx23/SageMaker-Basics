@@ -14,6 +14,7 @@
 <br />
 * https://sagemaker-workshop.com/custom/containers.html
 * https://docs.aws.amazon.com/sagemaker/latest/dg/amazon-sagemaker-toolkits.html
+* https://docs.aws.amazon.com/sagemaker/latest/dg/amazon-sagemaker-toolkits.html
 <br />
 
 <br />
@@ -42,9 +43,7 @@ https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html
 
 Estimator - https://sagemaker.readthedocs.io/en/stable/api/training/estimators.html
 
-HF Estimator - https://sagemaker.readthedocs.io/en/stable/frameworks/huggingface/sagemaker.huggingface.html#hugging-face-estimator
-
-TrochEstimator - https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/sagemaker.pytorch.html  
+TrochEstimator - https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/sagemaker.pytorch.html
 
 <br />
 
