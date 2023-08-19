@@ -13,6 +13,7 @@
 ![image-20230427132700004](https://sagemaker-workshop.com/images/sm-containers.gif)
 <br />
 * https://sagemaker-workshop.com/custom/containers.html
+* https://docs.aws.amazon.com/sagemaker/latest/dg/amazon-sagemaker-toolkits.html
 <br />
 
 <br />
@@ -74,7 +75,6 @@ envs = {
 }
 
 # 基础镜像，已经集成大部分依赖（注意us-east-1需要切换实际区域如us-west-2等）
-# 其他依赖，可以在source_dir中的requirements.txt中，以文本形式指定
 image_uri = '763104351884.dkr.ecr.us-east-1.amazonaws.com/huggingface-pytorch-training:1.13.1-transformers4.26.0-gpu-py39-cu117-ubuntu20.04'
 
 
@@ -85,7 +85,7 @@ source_dir - 上传至训练机/opt/ml/code路径的内容，需要包括entry_p
 
 base_job_name - Estimator API会追加时间戳等标记保证全局job_name唯一性。或直接在fit()中指定
 
-max_run - Large Model场景如果预计到任务时间较长，需要按需调整。初始的limit 5天，可以提ticket提升至28天
+max_run - 默认两天。Large Model场景如果预计到任务时间较长，需要按需调整。初始的limit 5天，可以提ticket提升至28天
 
 keep_alive_period_in_seconds - SageMaker的warm pool https://docs.aws.amazon.com/sagemaker/latest/dg/train-warm-pools.html。需要根据机型，提升limit
 '''

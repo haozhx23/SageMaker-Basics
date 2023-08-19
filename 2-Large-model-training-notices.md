@@ -6,21 +6,20 @@
 ### Sample Code
 
 Sagemaker官方examples - https://github.com/aws/amazon-sagemaker-examples
-
 - 主要关注training & advanced_functionality
 
 AWS Samples - https://github.com/aws-samples
-
-FlanT5 Deepspeed多机多卡Sample 
-- https://github.com/yuhuiaws/DeepSpeed-training-LLM-on-SageMaker-for-multiple-nodes
 
 Alpaca / Vicuna Sample
 - https://github.com/snowolf/alpaca-on-amazon-sagemaker
 - 包含Docker build & Fsx
 
-Llama with DeepSpeed or SMP
+Multi-node Llama with DeepSpeed or SMP
 - https://github.com/yuhuiaws/finetuning-and-deploying-llama-on-Sagemaker
 
+Multi-node Alpaca training & QLoRA
+- https://github.com/haozhx23/Alpaca-Llama2-Multinode-on-SageMaker
+- https://github.com/haozhx23/Llama2-QLoRA-on-SageMaker
 
 <br />
 
@@ -50,85 +49,32 @@ Self-build docker
 - 如果用notebook instance构建镜像，需要提前把docker的存储路径修改到/ec2-user/SagaMaker/some_temp_path，来使用外挂存储。避免空间不足。&重启docker  
 
 <br />
-
-### SageMaker API Sample
-
-```python
-from sagemaker.estimator import Estimator
-
-instance_count = 2
-envs = {
-            'NODE_NUMBER':str(instance_count),
-            'MODEL_S3_BUCKET': sagemaker_default_bucket
-}
-
-# 基础镜像，已经集成大部分依赖（注意us-east-1需要切换实际区域如us-west-2等）
-# 其他依赖，可以在source_dir中的requirements.txt中，以文本形式指定
-image_uri = '763104351884.dkr.ecr.us-east-1.amazonaws.com/huggingface-pytorch-training:1.13.1-transformers4.26.0-gpu-py39-cu117-ubuntu20.04'
-
-
-'''
-entry_point - 入口脚本，兼容.py/.sh
-
-source_dir - 上传至训练机/opt/ml/code路径的内容，需要包括entry_point。改路径下存在的requirement.txt会自动执行。或整体改用dependency参数，详情参考API文档
-
-base_job_name - Estimator API会追加时间戳等标记保证全局job_name唯一性。或直接在fit()中指定
-
-max_run - Large Model场景如果预计到任务时间较长，需要按需调整。初始的limit 5天，可以提ticket提升至28天
-
-keep_alive_period_in_seconds - SageMaker的warm pool https://docs.aws.amazon.com/sagemaker/latest/dg/train-warm-pools.html。滚动维持训练资源（节省资源拉取，镜像部署的时间）。需要根据机型，提升limit。
-'''
-
-# 有其他的Estimator形式。底层都是基于docker，没有本质区别。
-est = Estimator(role=role,
-                      entry_point='run_train.py',
-                      source_dir='./',
-                      base_job_name='some-job-name',
-                      instance_count=instance_count,
-                      instance_type='ml.p4de.24xlarge',
-                      image_uri=image_uri,
-                      environment=envs,
-                      # hyperparameters=hyps, # 如果不需要env，可以用hyper params带入所需变量
-                      max_run=3600*24*2,
-                      keep_alive_period_in_seconds=3600,
-                      disable_profiler=True,
-                      debugger_hook_config=False)
-
-
-## data channel
-## 训练数据在S3的路径
-data_channel = {'train123':'s3://some-bucket-name/datasets/data-path-train/',
-           'val123':'s3://some-bucket-name/datasets/data-path-val/'}
-
-est.fit(data_channel)
-```
-
 <br />
 
-### 入口脚本Sample
+### 训练启动流程（以.sh为例）
 
 ```shell
 #!/bin/bash
 
-# 1 - 模型参数文件，从s3拷贝到资源机	
+# 1 - 模型参数文件，从s3拷贝到资源机
 	# s5cmd等效于aws cli的aws s3 cp命令，速度更快
 	# （大模型以外的场景不需要该操作）
     # 注意destination必须为/tmp的prefix（大机型自带的NVME存储）
+    # In multi-node training, only copy on LocalRank 0
 chmod +x ./s5cmd
 ./s5cmd sync s3://$MODEL_S3_BUCKET/some-large-model/pretrain/* /tmp/large_model_pretrain/
 
 # 2 - 训练数据从s3拷贝到资源机
-	# （不需要操作，Sagemaker会自动拷贝到资源机的默认路径/opt/ml/input/data/）
+	# （默认不需要操作，Sagemaker会自动拷贝到资源机的默认路径/opt/ml/input/data/）
 	# e.g. /opt/ml/input/data/train123，这里train123跟Sagemaker Estimator.fit() 传入的channel中的key名称一致
+    # *也可以使用1中的加速拷贝形式，或其他Steam传输形式
 
 
 # 3 - 代码及脚本
 	# （不需要操作，Sagemaker Estimator参数中指定的source_dir/dependency等，会自动上传到资源机的默认路径/opt/ml/code）
 
 
-#torchrun
-#python -m torch.distributed.run
-deepspeed --num_gpus=8 /opt/ml/code/model_file/train.py \
+torchrun  --num_gpus=8 /opt/ml/code/model_file/train.py \
     --deepspeed ds.json \
     --model_name_or_path /tmp/large_model_pretrain/ \
     --data_path /opt/ml/input/data/train123/sample_dataset.json \
@@ -142,32 +88,29 @@ deepspeed --num_gpus=8 /opt/ml/code/model_file/train.py \
 # 4 - 训练后的模型参数，从资源机拷贝到S3
 	# （*注意LLM场景，务必不能用/opt/ml/model作为模型的输出路径，否则Sagemaker会执行 model file -> tar --s3 cp--> s3
 	# 会有小时级别的时间消耗
-chmod +x ./s5cmd
 ./s5cmd sync /tmp/large_model_out s3://$MODEL_S3_BUCKET/some-output-path/output/$(date +%Y-%m-%d-%H-%M-%S)/
 ```
 
-* 可以在训练脚本中，使用os.system()进行s5cmd的执行，用于训练过程中的checkpoint即时地持久化至s3，长时间训练下无需处理资源机上的存储空间。
+* 可以在训练脚本中，使用os.system()进行s5cmd拷贝的执行，用于训练过程中的checkpoint即时地持久化至s3，长时间训练下无需处理资源机上的存储空间。
 
 <br />
 
 ### 训练过程中的存储路径设置（参考）
+<u>***Note：LLM场景因模型较大，务必走上述Sample Code中的形式，直接用s5cmd对参数文件、checkpoint等进行控制。以下仅为SageMaker默认机制中的原理参考。</u>
 
 包括SM默认使用的路径、自动tar、tmp路径等
 
 https://docs.aws.amazon.com/sagemaker/latest/dg/model-train-storage.html
-
 https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo-output.html
-
 https://docs.aws.amazon.com/sagemaker/latest/dg/model-checkpoints.html
 
-<u>***Note：仅做原理参考。LM场景因为模型太大，务必走上述Sample Code中的形式，直接用s5cmd对参数文件、checkpoint等进行控制</u>
+
 
 <br />
 
 ### 需要注意的点
 
 如果在SageMaker Console手动停止任务后，长时间任务状态没有变化或者停止，需要快速开ticket，由后台engineer操作强停。
-
 
 <br />
 
