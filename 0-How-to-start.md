@@ -32,9 +32,7 @@
 <br />
 
 > 1. 一般来说，由于SageMaker Notebook仅作为代码调试、拉起远端资源、镜像build&push、文件下载及其与S3的交换等用途，不直接进行数据处理、模型训练、部署推理等。因此，建议机型为```ml.c5.xlarge```或者```ml.m5.xlarge```。有时，如果需要在Notebook Instance本地进行GPU代码调试，或多卡（只能单机）的训练等，可以选用GPU机型，如```ml.g5.4xlarge```或者```ml.g5.12xlarge```等机型。
-<br />
 > 2. EBS存储，**建议200G以上**，用户下载暂存的模型，镜像构建等。
-<br />
 > 3. 补充：在Notebook上可以使用SageMaker Local Mode调试，与拉起远端Job时的接口一致，更便于直接扩展。参考google - SageMaker Local Mode。
 
 <br />
