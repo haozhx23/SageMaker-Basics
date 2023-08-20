@@ -45,7 +45,6 @@ Notebook Instance状态Ready之后，可以进入JupyterLab，界面如下。
 <br />
 
 > 1. 进入之后，左侧所见文件浏览器部分的绝对路径是```/home/ec2-user/SageMaker/```。
-<br />
 > 2. 首次进入时，左侧在文件浏览器处于```/```路径时，在右侧打开Terminal，使用```pwd```查看路径，得到```/home/ec2-user/```，因此需要先```cd SageMaker```。
 <br />
 
@@ -66,9 +65,7 @@ Notebook Instance状态Ready之后，可以进入JupyterLab，界面如下。
 ![jup-launcher](assets/jup-launcher.jpg)
 <br />
 
-> 2. 基于现有的git repo：在所需路径下，打开Terminal，直接进行
-```git clone https://github.com/XXX/YYY```
-
+> 2. 基于现有的git repo：在所需路径下，打开Terminal，直接进行```git clone https://github.com/XXX/YYY```。
 > 进入后需要选择kernel，一般只需要用到```conda_python3``` kernel。如果需要在Notebook上调试Deap Learning框架的代码如Tensorflow，pyTorch，则选择对应的tf，torch kernel。
 
 ![jup-kernel](assets/jup-kernel.jpg)
