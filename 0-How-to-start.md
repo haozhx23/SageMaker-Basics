@@ -27,7 +27,6 @@
 
 ### 3. SageMaker Notebook机型&EBS选择
 
-![sm-nb-instance-config](assets/sm-nb-instance-config.jpg){:height="50%" width="50%"}
 <img src="assets/sm-nb-instance-config.jpg" height="50%" width="50%">
 <br />
 <br />
