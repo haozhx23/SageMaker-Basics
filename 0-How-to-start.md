@@ -29,6 +29,7 @@
 
 ![sm-nb-instance-config](assets/sm-nb-instance-config.jpg)
 <br />
+<br />
 
 1. 一般来说，由于SageMaker Notebook仅作为代码调试、拉起远端资源、镜像build&push、文件下载及其与S3的交换等用途，不直接进行数据处理、模型训练、部署推理等。因此，建议机型为```ml.c5.xlarge```或者```ml.m5.xlarge```。有时，如果需要在Notebook Instance本地进行GPU代码调试，或多卡（只能单机）的训练等，可以选用GPU机型，如```ml.g5.4xlarge```或者```ml.g5.12xlarge```等机型。
 <br />
@@ -43,6 +44,7 @@
 Notebook Instance状态Ready之后，可以进入JupyterLab，界面如下。
 ![jupyterlab](assets/jupyterlab.jpg)
 <br />
+<br />
 
 1. 进入之后，左侧所见文件浏览器部分的绝对路径是```/home/ec2-user/SageMaker/```。
 <br />
@@ -50,6 +52,7 @@ Notebook Instance状态Ready之后，可以进入JupyterLab，界面如下。
 <br />
 
 ![default-cd-path](assets/default-cd-path.jpg)
+<br />
 <br />
 
 3. 在其他任意**子路径**启动Terminal时，会默认在该路径下，不需要手动```cd```。
