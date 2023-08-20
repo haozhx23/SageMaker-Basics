@@ -1,9 +1,7 @@
 
+# SageMaker基本操作
 
-
-## SageMaker基本操作
-
-#### 0. SageMaker核心原理
+### 0. SageMaker核心原理
 
 本质上是一套可以pip install的SDK。用来调用、管理云上的其他资源（如存储、镜像）及算力（如GPU机器预处理、训练、推理）。
 ![image-20230427132700003](assets/image-20230427132700003.png)
@@ -11,7 +9,7 @@
 <br />
 <br />
 
-#### 1. SageMaker Console中新建Notebook实例
+### 1. SageMaker Console中新建Notebook实例
 
 进入AWS SageMaker Console之后，开始新建Notebook Instance
 ![sm-launch-nb-instance](assets/sm-launch-nb-instance.jpg)
@@ -19,7 +17,7 @@
 <br />
 <br />
 
-#### 2. IAM Role所需权限
+### 2. IAM Role所需权限
 如SageMaker Notebook Instance，在创建时需要使用的IAM Role至少带有如下两类策略。或直接新建IAM Role，并随后补充追加。
 ![sm-iam-role](assets/sm-iam-role.jpg)
 
@@ -27,7 +25,7 @@
 <br />
 
 
-#### 3. SageMaker Notebook机型&EBS选择
+### 3. SageMaker Notebook机型&EBS选择
 
 ![sm-nb-instance-config](assets/sm-nb-instance-config.jpg)
 <br />
@@ -41,7 +39,7 @@
 <br />
 <br />
 
-#### 4. JupyterLab环境介绍
+### 4. JupyterLab环境介绍
 Notebook Instance状态Ready之后，可以进入JupyterLab，界面如下。
 ![jupyterlab](assets/jupyterlab.jpg)
 <br />
@@ -60,7 +58,7 @@ Notebook Instance状态Ready之后，可以进入JupyterLab，界面如下。
 <br />
 
 
-#### 5. Notebook中开发
+### 5. Notebook中开发
 常用操作如下。
 1. 新建notebook脚本：在Launcher中，选取对应的Kernel类型，打开notebook。
 
