@@ -69,5 +69,18 @@ Notebook Instance状态Ready之后，可以进入JupyterLab，界面如下。
 > 进入后需要选择kernel，一般只需要用到```conda_python3``` kernel。如果需要在Notebook上调试Deap Learning框架的代码如Tensorflow，pyTorch，则选择对应的tf，torch kernel。
 
 ![jup-kernel](assets/jup-kernel.jpg)
+<br />
+
+> 3. 快捷操作：
+
+![nb-basics](assets/nb-basics.jpg)
+<br />
 
 
+### 6. SageMaker Console
+除Notebook Instace的创建和管理外，SageMaker主页Console可以进行各种任务的管理，包括Training Job，Model Hosting Endpoint。
+
+![sm-console](assets/sm-console.jpg)
+<br />
+
+> 在Notebook中触发Job之后（如Training Job, Processing Job, Model Deployment），Notebook及Notebook Instance的运行状态，不影响任务的持续进行。
