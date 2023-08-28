@@ -75,6 +75,14 @@ Notebook Instance状态Ready之后，可以进入JupyterLab，界面如下。
 
 ![nb-basics](assets/nb-basics.jpg)
 <br />
+![4-shorts](assets/4-shorts.jpg)
+</br>
+
+> Tips: 
+> - <mark>Always restart the kernel after new pip installation</mark> (variables in this notebook session will be cleared)
+> - Use `!` in a cell before a normal shell command, e.g. `!ls`, `!aws s3 cp <SOURCE> <DEST>`
+> - Right-click the output log and `Enable Scrolling for Outputs`
+> - Use the execute button to execute each cell or with Shift+Enter
 
 
 ### 6. SageMaker Console
