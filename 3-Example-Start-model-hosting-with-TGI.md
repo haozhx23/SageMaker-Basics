@@ -1,4 +1,4 @@
-# Llama2 Hosting with TGI
+# Example Hosting with TGI
 
 #### - Hugging Face’s Text Generation Inference (TGI) for LLM deployment
 
@@ -35,6 +35,7 @@ Use the Sample Notebook downloaded to deploy a Falcon-7b model on an AWS g5.2xla
 ![4-shorts](assets/4-shorts.jpg)
 </br>
 
+> [!NOTE]
 > <mark>Restart the kernel after new pip installation</mark> (variables in memory will be cleared)
 </br>
 
